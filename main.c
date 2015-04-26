@@ -39,7 +39,6 @@ void luaTask(void*);
 
 void ledOffTask(void* arg)
 {
-
    while (1) {
 
      posTaskSleep(MS(60000));

@@ -37,8 +37,8 @@
 
 #include "lauxlib.h"
 
-int luaopen_lgpio(lua_State *L);
-int luaopen_luos(lua_State *L);
+int luaopen_gpio(lua_State *L);
+int luaopen_uos(lua_State *L);
 
 #include "driverlib.h"
  
@@ -48,74 +48,78 @@ int luaopen_luos(lua_State *L);
 
 typedef struct {
 
-    char port;
-    int bit;
+  char port;
+  int bit;
 
 } GPIOPort;;
  
 static int lgpio_new(lua_State *L)
 {
-    GPIOPort     *gu;
-    const char*  port;
-    int          bit;
+  GPIOPort     *gu;
+  const char*  port;
+  int          bit;
  
-    port  = luaL_checkstring(L, 1);
-    if (port == NULL)
-        luaL_error(L, "port cannot be empty");
+  port  = luaL_checkstring(L, 1);
+  if (port == NULL)
+    luaL_error(L, "port cannot be empty");
  
-    bit  = luaL_checkinteger(L, 2);
+  bit  = luaL_checkinteger(L, 2);
 
-    gu       = (GPIOPort *)lua_newuserdata(L, sizeof(*gu));
-    gu->port = '\0';
-    gu->bit  = 0;
+  gu       = (GPIOPort *)lua_newuserdata(L, sizeof(*gu));
+  gu->port = '\0';
+  gu->bit  = 0;
  
-    luaL_getmetatable(L, "LGpio");
-    lua_setmetatable(L, -2);
+  luaL_getmetatable(L, "LGpio");
+  lua_setmetatable(L, -2);
  
-    gu->port = *port;
-    gu->bit  = bit;
+  gu->port = *port;
+  gu->bit  = bit;
  
-    return 1;
+  return 1;
 }
  
 static int lgpio_set(lua_State *L)
 {
-    GPIOPort *gu;
-    int      val;
+  GPIOPort *gu;
+  int      val;
  
-    gu  = (GPIOPort *)luaL_checkudata(L, 1, "LGpio");
-    val = luaL_checkinteger(L, 2);
+  gu  = (GPIOPort *)luaL_checkudata(L, 1, "LGpio");
+  val = luaL_checkinteger(L, 2);
 
-    if (val)
-      GPIO_setOutputHighOnPin(GPIO_PORT_P1, GPIO_PIN0);
-    else
-      GPIO_setOutputLowOnPin(GPIO_PORT_P1, GPIO_PIN0);
+  if (val)
+    GPIO_setOutputHighOnPin(GPIO_PORT_P1, GPIO_PIN0);
+  else
+    GPIO_setOutputLowOnPin(GPIO_PORT_P1, GPIO_PIN0);
  
-    return 0;
+  return 0;
 }
  
 static const struct luaL_Reg lgpio_methods[] = {
-    { "set",         lgpio_set       },
-    //{ "__gc",        lgpio_destroy   },
-    //{ "__tostring",  lgpio_tostring  },
-    { NULL,          NULL               },
+
+  { "set",         lgpio_set       },
+  //{ "__gc",        lgpio_destroy   },
+  //{ "__tostring",  lgpio_tostring  },
+  { NULL,          NULL               },
+
 };
  
 static const struct luaL_Reg lgpio_functions[] = {
-    { "new", lgpio_new },
-    { NULL,  NULL      }
+
+  { "new", lgpio_new },
+  { NULL,  NULL      }
+
 };
  
-int luaopen_lgpio(lua_State *L)
+int luaopen_gpio(lua_State *L)
 {
-    luaL_newmetatable(L, "LGpio");
-    lua_pushvalue(L, -1);
-    lua_setfield(L, -2, "__index");
+  luaL_newmetatable(L, "LGpio");
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -2, "__index");
  
-    luaL_setfuncs(L, lgpio_methods, 0);
-    luaL_newlib(L, lgpio_functions);
+  luaL_setfuncs(L, lgpio_methods, 0);
+  luaL_newlib(L, lgpio_functions);
  
-    return 1;
+  return 1;
 }
 
 static int luos_resourceDiag(lua_State *L)
@@ -124,15 +128,17 @@ static int luos_resourceDiag(lua_State *L)
   return 0;
 }
 static const struct luaL_Reg luos_functions[] = {
-    { "resourcediag", luos_resourceDiag },
-    { NULL,  NULL      }
+
+  { "resourcediag", luos_resourceDiag },
+  { NULL,  NULL      }
+
 };
 
-int luaopen_luos(lua_State *L)
+int luaopen_uos(lua_State *L)
 {
-    luaL_newlib(L, luos_functions);
+  luaL_newlib(L, luos_functions);
 
-    return 1;
+  return 1;
 }
 
 static const luaL_Reg libs[] = {
@@ -141,8 +147,8 @@ static const luaL_Reg libs[] = {
  * Modules from lua distribution.
  */
 
-  { "gpio", luaopen_lgpio },
-  { "uos", luaopen_luos, },
+  { "gpio", luaopen_gpio },
+  { "uos", luaopen_uos, },
   { NULL, NULL }
 };
 
