@@ -34,7 +34,7 @@ CPU = msp432
 CORTEX = m4
 export CORTEX
 
-BUILD = DEBUG
+BUILD ?= DEBUG
 LD_SCRIPTS=launchpad.ld
 
 include $(RELROOT)make/common.mak
