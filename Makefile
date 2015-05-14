@@ -41,7 +41,7 @@ include $(RELROOT)make/common.mak
 
 NANO = 1
 TARGET = lua-test
-SRC_TXT =	startup.c main.c luaext.c
+SRC_TXT =	startup.c main.c lua.c luaext.c
 
 SRC_OBJ =
 SRC_LIB = -lm

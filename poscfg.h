@@ -392,7 +392,7 @@
  * If this definition is set to 1, the function ::posTaskGetCurrent will
  * be included into the pico]OS kernel.
  */
-#define POSCFG_FEATURE_GETTASK       0
+#define POSCFG_FEATURE_GETTASK       1
 
 /** Include function ::posTaskUnused.
  * If this definition is set to 1, the function ::posTaskUnused will
