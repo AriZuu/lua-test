@@ -152,7 +152,7 @@ static const luaL_Reg libs[] = {
   { NULL, NULL }
 };
 
-LUALIB_API void pluaAddLibs(lua_State *L)
+void pua_addlibs(lua_State *L)
 {
   const luaL_Reg *lib;
 

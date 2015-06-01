@@ -37,11 +37,13 @@ export CORTEX
 BUILD ?= DEBUG
 LD_SCRIPTS=launchpad.ld
 
+EXTRA_CFLAGS=-O1
+export EXTRA_CFLAGS
 include $(RELROOT)make/common.mak
 
 NANO = 1
 TARGET = lua-test
-SRC_TXT =	startup.c main.c lua.c luaext.c
+SRC_TXT =	startup.c main.c  luaext.c fsdata.c
 
 SRC_OBJ =
 SRC_LIB = -lm

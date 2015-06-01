@@ -32,6 +32,12 @@
 #include <picoos-u.h>
 #include <picoos-lua.h>
 
+#include <string.h>
+
+#include "lua.h"
+#include "lauxlib.h"
+#include "lualib.h"
+
 #include "driverlib.h"
 
 void ledOffTask(void*);
@@ -41,18 +47,56 @@ void ledOffTask(void* arg)
 {
    while (1) {
 
+     uosResourceDiag();
      posTaskSleep(MS(60000));
      GPIO_setOutputLowOnPin(GPIO_PORT_P1, GPIO_PIN0);
    }
 }
 
+static const UosMount luaFs = { 
+  "/usr/local/share/lua/5.3/",
+  &uosRomFS,
+  "/"
+};
+
+static int console(lua_State* L)
+{
+  const char* code = "require 'simplerepl'.new('Lua shell>'):repl()";
+  int status;
+
+  luaL_openlibs(L);
+  status = luaL_loadbuffer(L, code, strlen(code), "=stdin");
+  if (status == LUA_OK)
+    status = lua_pcall(L, 0, 0, 0);
+
+  if (status != LUA_OK) {
+
+    lua_writestringerror("lua: %s\n", lua_tostring(L, -1));
+     lua_pop(L, 1);
+  }
+
+  return 0;
+}
+
 void luaTask(void* arg)
 {
-  char* argv[] = { "lua" };
+  uosInit();
   uosBootDiag();
+  uosMount(&luaFs);
+
   POSTASK_t ledOff = posTaskCreate(ledOffTask, NULL, 3, 500);
   POS_SETTASKNAME(ledOff, "ledOff");
-  luaMain(1, argv);
+
+  int status;
+  lua_State *L = luaL_newstate();
+  
+  lua_pushcfunction(L, console);
+  status = lua_pcall(L, 0, 0, 0);
+  if (status != LUA_OK) {
+
+    lua_writestringerror("lua: %s\n", lua_tostring(L, -1));
+    lua_pop(L, 1);
+  }
 }
 
 int main(int argc, char **argv)
@@ -77,6 +121,6 @@ int main(int argc, char **argv)
   /*
    * Start scheduler.
    */
-  nosInit(luaTask, NULL, 2, 4096, 1024);
+  nosInit(luaTask, NULL, 2, 15000, 256);
   return 0;
 }
