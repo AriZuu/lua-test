@@ -161,7 +161,7 @@ extern void *__heap_end;
  *        should set ::NOSCFG_MEM_MANAGE_MODE to 1. Otherwise the memory
  *        will fragment too much if ::nosMemRealloc is used frequently.
  */
-#define NOSCFG_FEATURE_REALLOC       0
+#define NOSCFG_FEATURE_REALLOC       1
 
 /** @} */
 
