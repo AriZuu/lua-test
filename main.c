@@ -54,7 +54,7 @@ void ledOffTask(void* arg)
 }
 
 static const UosMount luaFs = { 
-  "/usr/local/share/lua/5.3/",
+  "/usr/local/share/lua/5.3",
   &uosRomFS,
   "/"
 };
