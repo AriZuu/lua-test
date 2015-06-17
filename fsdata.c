@@ -91,7 +91,7 @@ static const unsigned char file_1[] = {
 };
 
 
-const UosRomFile uosRomFiles[] = {
+const UosRomFile romFiles[] = {
 { "simplerepl.lua",  file_1, sizeof(file_1) },
 { NULL,  NULL, 0 }
 };

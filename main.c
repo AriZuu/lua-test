@@ -53,12 +53,6 @@ void ledOffTask(void* arg)
    }
 }
 
-static const UosMount luaFs = { 
-  "/usr/local/share/lua/5.3",
-  &uosRomFS,
-  "/"
-};
-
 static int console(lua_State* L)
 {
   const char* code = "require 'simplerepl'.new('Lua shell>'):repl()";
@@ -78,11 +72,13 @@ static int console(lua_State* L)
   return 0;
 }
 
+extern const UosRomFile romFiles[];
+
 void luaTask(void* arg)
 {
   uosInit();
   uosBootDiag();
-  uosMount(&luaFs);
+  uosMountRom("/usr/local/share/lua/5.3", romFiles);
 
   POSTASK_t ledOff = posTaskCreate(ledOffTask, NULL, 3, 500);
   POS_SETTASKNAME(ledOff, "ledOff");
